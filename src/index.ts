@@ -7,6 +7,7 @@ import { swaggerSpec } from "./utils/swagger";
 import cors from "cors";
 import userRouter from "./routes/user.route";
 import laporBarangRouter from "./routes/laporBarang.route";
+import pengajuanKlaimRouter from "./routes/pengajuanKlaim.route";
 
 const PORT = ENV.PORT;
 const app = express();
@@ -21,6 +22,7 @@ app.get("/", (req, res) => {
 app.use("/users", userRouter);
 app.use("/auth", authRouter);
 app.use("/lapor-barang", laporBarangRouter);
+app.use("/pengajuan-klaim", pengajuanKlaimRouter);
 
 app.use("/docs", swaggerUi.serve);
 app.get("/docs", swaggerUi.setup(swaggerSpec));

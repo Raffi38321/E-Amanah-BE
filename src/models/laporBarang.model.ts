@@ -6,6 +6,8 @@ interface LaporBarangT extends Document {
   tanggal: Date;
   photo: string;
   deskripsiBarang: string;
+  isClaimed: boolean;
+  laporBy: Types.ObjectId;
 }
 
 const laporBarangSchema = new Schema<LaporBarangT>(
@@ -16,10 +18,12 @@ const laporBarangSchema = new Schema<LaporBarangT>(
     tanggal: { type: Date, required: true },
     photo: { type: String, required: true },
     deskripsiBarang: { type: String, required: true },
+    isClaimed: { type: Boolean, default: false },
+    laporBy: { type: Schema.Types.ObjectId, ref: "User", required: true },
   },
   { timestamps: true },
 );
 
-const LaporBarang = mongoose.model<LaporBarangT>("Product", laporBarangSchema);
+const LaporBarang = mongoose.model<LaporBarangT>("Lapor", laporBarangSchema);
 
 export default LaporBarang;

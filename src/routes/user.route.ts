@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { validate } from "../middlewares/reqBody.middleware";
-import { employeeSchema } from "../validators/user.validator";
+import { userSchema } from "../validators/user.validator";
 import upload from "../middlewares/multer.middleware";
 import verifyToken from "../middlewares/acl.middleware";
 import isUserAuthorized from "../middlewares/rbac.middleware";
@@ -131,7 +131,7 @@ const userRouter = Router();
 
 userRouter.post(
   "/",
-  [upload.single("photo"), validate(employeeSchema)],
+  [verifyToken, upload.single("photo"), validate(userSchema)],
   createUser,
 );
 

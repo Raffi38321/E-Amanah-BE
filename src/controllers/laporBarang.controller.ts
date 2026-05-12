@@ -6,7 +6,7 @@ import LaporBarang from "../models/laporBarang.model";
 export const createLaporan = async (req: Request, res: Response) => {
   try {
     const { name, kategori, lokasi, tanggal, deskripsiBarang } = req.body;
-
+    const { userId } = (req as any).employee;
     let photoUrl = null;
 
     if (req.file) {
@@ -32,6 +32,7 @@ export const createLaporan = async (req: Request, res: Response) => {
       tanggal,
       deskripsiBarang,
       photo: photoUrl,
+      laporBy: userId,
     });
 
     response.successCreate(res, "berhasil buat lapor", 201, { lapor });
