@@ -7,7 +7,7 @@ const options: swaggerJSDoc.Options = {
   definition: {
     openapi: "3.0.0",
     info: {
-      title: "Brew SYS API",
+      title: "BE Amanah",
       version: "1.0.0",
       description: "API documentation for the backend",
     },
