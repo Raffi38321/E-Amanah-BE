@@ -1,5 +1,4 @@
 - npm install
 - npm run dev
 
-
-dokumentasi di /docss
+dokumentasi di /docs

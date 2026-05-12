@@ -12,10 +12,10 @@ const laporBarangRouter = Router();
 
 /**
  * @swagger
- * /products:
+ * /lapor-barang:
  *   post:
- *     summary: Create a new product
- *     tags: [Products]
+ *     summary: Buat laporan barang baru
+ *     tags: [LaporBarang]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -26,43 +26,48 @@ const laporBarangRouter = Router();
  *             type: object
  *             required:
  *               - name
- *               - price
- *               - isAvailable
- *               - stock
+ *               - kategori
+ *               - lokasi
+ *               - tanggal
+ *               - deskripsiBarang
  *             properties:
  *               name:
  *                 type: string
- *               price:
- *                 type: number
- *               isAvailable:
- *                 type: boolean
- *               stock:
- *                 type: number
+ *               kategori:
+ *                 type: string
+ *               lokasi:
+ *                 type: string
+ *               tanggal:
+ *                 type: string
+ *                 format: date
+ *               deskripsiBarang:
+ *                 type: string
  *               photo:
  *                 type: string
  *                 format: binary
  *           example:
- *             name: "Kopi Susu Gula Aren"
- *             price: 25000
- *             isAvailable: true
- *             stock: 100
- *             photo: (binary file)
+ *             name: "Laptop Asus"
+ *             kategori: "Elektronik"
+ *             lokasi: "Gedung A Lt. 2"
+ *             tanggal: "2024-03-05"
+ *             deskripsiBarang: "Laptop warna hitam, ada stiker di cover"
  *     responses:
  *       201:
- *         description: Product created successfully
+ *         description: Laporan berhasil dibuat
  *         content:
  *           application/json:
  *             example:
- *               status: "succes"
- *               message: "berhasil buat product"
+ *               status: "success"
+ *               message: "berhasil buat lapor"
  *               data:
- *                 product:
+ *                 lapor:
  *                   _id: "65e6789abcd12345e6789f"
- *                   name: "Kopi Susu Gula Aren"
- *                   price: 25000
- *                   isAvailable: true
- *                   stock: 100
- *                   photo: "https://res.cloudinary.com/.../kopi.jpg"
+ *                   name: "Laptop Asus"
+ *                   kategori: "Elektronik"
+ *                   lokasi: "Gedung A Lt. 2"
+ *                   tanggal: "2024-03-05T00:00:00.000Z"
+ *                   deskripsiBarang: "Laptop warna hitam, ada stiker di cover"
+ *                   photo: "https://res.cloudinary.com/.../laptop.jpg"
  *                   createdAt: "2024-03-05T13:00:00.000Z"
  *                   updatedAt: "2024-03-05T13:00:00.000Z"
  *                   __v: 0
@@ -70,104 +75,33 @@ const laporBarangRouter = Router();
  *         description: Bad request
  *       401:
  *         description: Unauthorized
- *       403:
- *         description: Forbidden
  *
- *   get:
- *     summary: Get all products
- *     tags: [Products]
+ * /lapor-barang/{id}:
+ *   delete:
+ *     summary: Hapus laporan barang berdasarkan ID
+ *     tags: [LaporBarang]
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID laporan barang
  *     responses:
  *       200:
- *         description: List of products
+ *         description: Laporan berhasil dihapus
  *         content:
  *           application/json:
  *             example:
- *               status: "succes"
- *               message: "berhasil dapetin semua product"
- *               data:
- *                 products:
- *                   - _id: "65e6789abcd12345e6789f"
- *                     name: "Kopi Susu Gula Aren"
- *                     price: 25000
- *                     isAvailable: true
- *                     stock: 100
- *                     photo: null
- *                     createdAt: "2024-03-05T13:00:00.000Z"
- *                     updatedAt: "2024-03-05T13:00:00.000Z"
- *                     __v: 0
+ *               status: "success"
+ *               message: "berhasil hapus"
+ *               data: null
  *       401:
  *         description: Unauthorized
- *       403:
- *         description: Forbidden
- *
- * /products/{id}:
- *   put:
- *     summary: Update product by ID
- *     tags: [Products]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *         description: Product ID
- *     requestBody:
- *       required: false
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *               price:
- *                 type: number
- *               isAvailable:
- *                 type: boolean
- *               stock:
- *                 type: number
- *           example:
- *             name: "Kopi Susu Gula Aren Large"
- *             price: 30000
- *             isAvailable: false
- *             stock: 0
- *     responses:
- *       200:
- *         description: Product updated successfully
- *       400:
- *         description: Bad request
- *       401:
- *         description: Unauthorized
- *       403:
- *         description: Forbidden
  *       404:
- *         description: Product not found
- *
- *   delete:
- *     summary: Delete product by ID
- *     tags: [Products]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *         description: Product ID
- *     responses:
- *       200:
- *         description: Product deleted successfully
- *       401:
- *         description: Unauthorized
- *       403:
- *         description: Forbidden
- *       404:
- *         description: Product not found
+ *         description: Laporan tidak ditemukan
  */
 
 laporBarangRouter.post(

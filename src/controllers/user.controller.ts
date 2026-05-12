@@ -31,7 +31,7 @@ export const createUser = async (req: Request, res: Response) => {
       name,
       role,
       photo: photoUrl,
-      NIM,
+      NIM: Number(NIM),
     });
     const { password: _, ...employeeData } = user.toObject();
 
@@ -46,7 +46,7 @@ export const createUser = async (req: Request, res: Response) => {
 export const getUser = async (req: Request, res: Response) => {
   try {
     const { userId } = (req as any).employee;
-    const user = await User.findByIdAndDelete(userId);
+    const user = await User.findById(userId);
     if (!user) {
       return response.notFound(res, "user ga ketemu");
     }

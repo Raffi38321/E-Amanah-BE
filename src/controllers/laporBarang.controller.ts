@@ -48,9 +48,12 @@ export const deleteLaporanById = async (req: Request, res: Response) => {
     if (!lapor) {
       return response.notFound(res, " ga ketemu");
     }
-
     response.success(res, "berhasil hapus ");
-  } catch (error) {
-    return response.serverError(res, "gagal pas ");
+  } catch (error: any) {
+    console.log(error);
+    if (error.name === "CastError" || error.kind === "ObjectId") {
+      return response.clientError(res, "ID tidak valid");
+    }
+    return response.serverError(res, "gagal pas hapus laporan");
   }
 };

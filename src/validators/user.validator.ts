@@ -6,5 +6,5 @@ export const employeeSchema = z.object({
   email: z.email(),
   password: z.string().min(6, "minimal 6 karakter buat password"),
   role: z.enum([Roles.Admin, Roles.Mahasiswa]).optional(),
-  NIM: z.number().optional(),
+  NIM: z.coerce.number().optional(),
 });

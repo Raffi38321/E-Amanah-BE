@@ -5,7 +5,7 @@ const roles = ["Admin", "Mahasiswa"] as const;
 type Role = (typeof roles)[number];
 interface UserT extends Document {
   name: string;
-  role: Role;
+  role: string;
   password: string;
   email: string;
   photo?: string | null;

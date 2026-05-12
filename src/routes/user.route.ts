@@ -9,16 +9,16 @@ import {
   createUser,
   deleteUser,
   getUser,
-} from "../controllers/employee.controller";
+} from "../controllers/user.controller";
 
 const userRouter = Router();
 
 /**
  * @swagger
- * /employees:
+ * /users:
  *   post:
- *     summary: Create a new employee
- *     tags: [Employees]
+ *     summary: Create a new user
+ *     tags: [Users]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -31,7 +31,6 @@ const userRouter = Router();
  *               - name
  *               - email
  *               - password
- *               - role
  *             properties:
  *               name:
  *                 type: string
@@ -43,6 +42,9 @@ const userRouter = Router();
  *                 minLength: 6
  *               role:
  *                 type: string
+ *                 enum: [Admin, Mahasiswa]
+ *               NIM:
+ *                 type: number
  *               photo:
  *                 type: string
  *                 format: binary
@@ -50,22 +52,23 @@ const userRouter = Router();
  *             name: "Joko Barista"
  *             email: "joko@kopi.com"
  *             password: "passwordsuperkuat"
- *             role: "barista"
- *             photo: (binary file)
+ *             role: "Mahasiswa"
+ *             NIM: 12345678
  *     responses:
  *       201:
- *         description: Employee created successfully
+ *         description: User created successfully
  *         content:
  *           application/json:
  *             example:
- *               status: "succes"
+ *               status: "success"
  *               message: "berhasil buat user"
  *               data:
  *                 employeeData:
  *                   _id: "65e6789abcd1234567890ef"
  *                   name: "Joko Barista"
  *                   email: "joko@kopi.com"
- *                   role: "barista"
+ *                   role: "Mahasiswa"
+ *                   NIM: 12345678
  *                   photo: "https://res.cloudinary.com/.../joko.jpg"
  *                   createdAt: "2024-03-05T12:00:00.000Z"
  *                   updatedAt: "2024-03-05T12:00:00.000Z"
@@ -78,37 +81,57 @@ const userRouter = Router();
  *         description: Forbidden
  *
  *   get:
- *     summary: Get all employees
- *     tags: [Employees]
+ *     summary: Get current logged in user
+ *     tags: [Users]
  *     security:
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: List of employees
+ *         description: User data
  *         content:
  *           application/json:
  *             example:
- *               status: "succes"
- *               message: "berhasil dapetin semua user"
- *               data:
- *                 employees:
- *                   - _id: "65eabcd1234567890abcdef"
- *                     name: "Budi Admin"
- *                     email: "admin@kopi.com"
- *                     role: "admin"
- *                     photo: null
- *                     createdAt: "2024-03-05T10:00:00.000Z"
- *                     updatedAt: "2024-03-05T10:00:00.000Z"
- *                     __v: 0
+ *               status: "success"
+ *               message: "berhasil dapet user"
+ *               data: null
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: User not found
+ *
+ * /users/{id}:
+ *   delete:
+ *     summary: Delete user by ID (Admin only)
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: User ID
+ *     responses:
+ *       200:
+ *         description: User deleted successfully
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: "success"
+ *               message: "berhasil hapus user"
+ *               data: null
  *       401:
  *         description: Unauthorized
  *       403:
  *         description: Forbidden
+ *       404:
+ *         description: User not found
  */
 
 userRouter.post(
   "/",
-  [verifyToken, upload.single("photo"), validate(employeeSchema)],
+  [upload.single("photo"), validate(employeeSchema)],
   createUser,
 );
 
