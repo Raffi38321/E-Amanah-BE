@@ -1,10 +1,11 @@
 import {
   createLaporan,
   deleteLaporanById,
+  getAllLaporBarangIsNotClaimed,
+  getLaporanByid,
 } from "../controllers/laporBarang.controller";
-import { Request, Response } from "express";
+import { Response } from "express";
 import LaporBarang from "../models/laporBarang.model";
-import cloudinary from "../utils/cloudinary";
 
 jest.mock("../models/laporBarang.model");
 jest.mock("../utils/cloudinary", () => ({
@@ -18,8 +19,10 @@ const mockRes = () => {
   return res;
 };
 
+// ─── createLaporan ────────────────────────────────────────────────────────────
+
 describe("createLaporan", () => {
-  it("berhasil buat laporan tanpa foto dan return 201", async () => {
+  it("returns 201 jika berhasil buat laporan tanpa foto", async () => {
     const fakeLapor = {
       _id: "l1",
       name: "Laptop",
@@ -40,6 +43,7 @@ describe("createLaporan", () => {
         deskripsiBarang: "Laptop hitam",
       },
       file: null,
+      employee: { userId: "u1" },
     } as any;
     const res = mockRes();
 
@@ -64,6 +68,7 @@ describe("createLaporan", () => {
         deskripsiBarang: "desc",
       },
       file: null,
+      employee: { userId: "u1" },
     } as any;
     const res = mockRes();
 
@@ -72,6 +77,112 @@ describe("createLaporan", () => {
     expect(res.status).toHaveBeenCalledWith(500);
   });
 });
+
+// ─── getAllLaporBarangIsNotClaimed ─────────────────────────────────────────────
+
+describe("getAllLaporBarangIsNotClaimed", () => {
+  it("returns 200 dengan data dan pagination", async () => {
+    const fakeLaporans = [{ _id: "l1", name: "Laptop", isClaimed: false }];
+    (LaporBarang.countDocuments as jest.Mock).mockResolvedValue(1);
+
+    const mockQuery = {
+      sort: jest.fn().mockReturnThis(),
+      skip: jest.fn().mockReturnThis(),
+      limit: jest.fn().mockReturnThis(),
+      populate: jest.fn().mockResolvedValue(fakeLaporans),
+    };
+    (LaporBarang.find as jest.Mock).mockReturnValue(mockQuery);
+
+    const req = { query: { page: "1", limit: "10" } } as any;
+    const res = mockRes();
+
+    await getAllLaporBarangIsNotClaimed(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          laporans: fakeLaporans,
+          pagination: expect.objectContaining({ currentPage: 1, totalData: 1 }),
+        }),
+      }),
+    );
+  });
+
+  it("returns 200 dengan default page dan limit jika query kosong", async () => {
+    (LaporBarang.countDocuments as jest.Mock).mockResolvedValue(0);
+    const mockQuery = {
+      sort: jest.fn().mockReturnThis(),
+      skip: jest.fn().mockReturnThis(),
+      limit: jest.fn().mockReturnThis(),
+      populate: jest.fn().mockResolvedValue([]),
+    };
+    (LaporBarang.find as jest.Mock).mockReturnValue(mockQuery);
+
+    const req = { query: {} } as any;
+    const res = mockRes();
+
+    await getAllLaporBarangIsNotClaimed(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(200);
+  });
+
+  it("returns 500 jika terjadi error", async () => {
+    (LaporBarang.countDocuments as jest.Mock).mockRejectedValue(
+      new Error("db error"),
+    );
+    const req = { query: {} } as any;
+    const res = mockRes();
+
+    await getAllLaporBarangIsNotClaimed(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(500);
+  });
+});
+
+// ─── getLaporanByid ───────────────────────────────────────────────────────────
+
+describe("getLaporanByid", () => {
+  it("returns 404 jika laporan tidak ditemukan", async () => {
+    (LaporBarang.findById as jest.Mock).mockResolvedValue(null);
+    const req = { params: { id: "l1" } } as any;
+    const res = mockRes();
+
+    await getLaporanByid(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(404);
+  });
+
+  it("returns 200 dengan data laporan", async () => {
+    const fakeLaporan = { _id: "l1", name: "Laptop" };
+    (LaporBarang.findById as jest.Mock).mockResolvedValue(fakeLaporan);
+    const req = { params: { id: "l1" } } as any;
+    const res = mockRes();
+
+    await getLaporanByid(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({ laporan: fakeLaporan }),
+      }),
+    );
+  });
+
+  it("returns 500 jika terjadi error", async () => {
+    (LaporBarang.findById as jest.Mock).mockRejectedValue(
+      new Error("db error"),
+    );
+    const req = { params: { id: "l1" } } as any;
+    const res = mockRes();
+
+    await getLaporanByid(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(500);
+  });
+});
+
+// ─── deleteLaporanById ────────────────────────────────────────────────────────
 
 describe("deleteLaporanById", () => {
   it("returns 404 jika laporan tidak ditemukan", async () => {

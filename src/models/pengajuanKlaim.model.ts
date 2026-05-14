@@ -1,10 +1,10 @@
 import mongoose, { Document, Schema, Types } from "mongoose";
 
-const status = ["Pending", "Success", "Rejected"] as const;
+export const status = ["Pending", "Success", "Rejected"] as const;
 export const statusKlaim = {
   Pending: "Pending",
   Success: "Success",
-  Rejeted: "Rejected",
+  Rejected: "Rejected",
 };
 interface klaimT extends Document {
   photo: string;
@@ -16,7 +16,7 @@ interface klaimT extends Document {
 
 const klaimSchema = new Schema<klaimT>(
   {
-    photo: { type: String, required: true },
+    photo: { type: String, default: null },
     deskripsiBarang: { type: String, required: true },
     klaimBy: { type: Schema.Types.ObjectId, ref: "User", required: true },
     idLaporan: { type: Schema.Types.ObjectId, ref: "Lapor", required: true },
