@@ -19,10 +19,8 @@ export const createPengajuan = async (req: Request, res: Response) => {
             else resolve(result);
           },
         );
-
         stream.end(req.file!.buffer);
       });
-
       photoUrl = result.secure_url;
     }
     const laporan = await LaporBarang.findById(idLaporan);

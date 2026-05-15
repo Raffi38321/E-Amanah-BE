@@ -188,7 +188,7 @@ const laporBarangRouter = Router();
  *             example:
  *               status: "succes"
  *               message: "berhasil hapus"
- *               data: null
+ *               data: "null"
  *       400:
  *         description: ID tidak valid
  *       401:
