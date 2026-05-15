@@ -37,7 +37,7 @@ export const createLaporan = async (req: Request, res: Response) => {
 
     response.successCreate(res, "berhasil buat lapor", 201, { lapor });
   } catch (error) {
-    // console.log(error);
+    console.log(error);
     response.serverError(res, "gagal pas buat lapor");
   }
 };

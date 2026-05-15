@@ -50,8 +50,10 @@ export const getUser = async (req: Request, res: Response) => {
     if (!user) {
       return response.notFound(res, "user ga ketemu");
     }
-
-    response.success(res, "berhasil dapet user");
+    const { password: _, ...userData } = user.toObject();
+    response.successWithData(res, "berhasil dapet data user", {
+      user: userData,
+    });
   } catch (error) {
     return response.serverError(res, "gagal pas getUser");
   }

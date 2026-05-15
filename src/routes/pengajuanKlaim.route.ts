@@ -8,6 +8,7 @@ import upload from "../middlewares/multer.middleware";
 import { validate } from "../middlewares/reqBody.middleware";
 import {
   createPengajuan,
+  getAllPengajuanKlaimIsPending,
   pengajuanKlaimAction,
 } from "../controllers/pengajuanKlaim.controller";
 import isUserAuthorized from "../middlewares/rbac.middleware";
@@ -72,6 +73,63 @@ const pengajuanKlaimRouter = Router();
  *       500:
  *         description: Server error
  *
+ *   get:
+ *     summary: Get semua pengajuan klaim status Pending (Admin only)
+ *     tags: [PengajuanKlaim]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: Nomor halaman
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 10
+ *         description: Jumlah data per halaman
+ *     responses:
+ *       200:
+ *         description: List pengajuan klaim pending
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: "succes"
+ *               message: "berhasil dapetin semua klaim pending"
+ *               data:
+ *                 klaims:
+ *                   - _id: "65f1234abcd56789ef012345"
+ *                     status: "Pending"
+ *                     deskripsiBarang: "Laptop saya warna hitam"
+ *                     photo: "null"
+ *                     klaimBy:
+ *                       _id: "65eabcd1234567890abcdef"
+ *                       name: "Muhammad Raffi"
+ *                       email: "raffi@gmail.com"
+ *                     idLaporan:
+ *                       _id: "65e6789abcd12345e6789f"
+ *                       name: "Laptop Asus"
+ *                       kategori: "Elektronik"
+ *                       lokasi: "Ruang Lab Informatika"
+ *                     createdAt: "2024-03-06T08:00:00.000Z"
+ *                     updatedAt: "2024-03-06T08:00:00.000Z"
+ *                 pagination:
+ *                   currentPage: 1
+ *                   totalPages: 5
+ *                   totalData: 50
+ *                   limit: 10
+ *                   hasNextPage: true
+ *                   hasPrevPage: false
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden (bukan Admin)
+ *       500:
+ *         description: Server error
+ *
  * /pengajuan-klaim/action/{id}:
  *   put:
  *     summary: Approve atau reject pengajuan klaim (Admin only)
@@ -114,7 +172,7 @@ const pengajuanKlaimRouter = Router();
  *                   deskripsiBarang: "Laptop saya warna hitam dengan stiker merah"
  *                   idLaporan: "65e6789abcd12345e6789f"
  *                   klaimBy: "65eabcd1234567890abcdef"
- *                   photo: null
+ *                   photo: "null"
  *                   createdAt: "2024-03-06T08:00:00.000Z"
  *                   updatedAt: "2024-03-06T09:00:00.000Z"
  *                   __v: 0
@@ -134,6 +192,12 @@ pengajuanKlaimRouter.post(
   "/",
   [verifyToken, upload.single("photo"), validate(pengajuanKlaimSchema)],
   createPengajuan,
+);
+
+pengajuanKlaimRouter.get(
+  "/",
+  [verifyToken, isUserAuthorized([Roles.Admin])],
+  getAllPengajuanKlaimIsPending,
 );
 
 pengajuanKlaimRouter.put(

@@ -93,7 +93,7 @@ const userRouter = Router();
  *             example:
  *               status: "success"
  *               message: "berhasil dapet user"
- *               data: null
+ *               data: "null"
  *       401:
  *         description: Unauthorized
  *       404:
@@ -120,7 +120,7 @@ const userRouter = Router();
  *             example:
  *               status: "success"
  *               message: "berhasil hapus user"
- *               data: null
+ *               data: "null"
  *       401:
  *         description: Unauthorized
  *       403:
@@ -131,7 +131,7 @@ const userRouter = Router();
 
 userRouter.post(
   "/",
-  [verifyToken, upload.single("photo"), validate(userSchema)],
+  [upload.single("photo"), validate(userSchema)],
   createUser,
 );
 

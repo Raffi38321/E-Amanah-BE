@@ -112,7 +112,7 @@ const laporBarangRouter = Router();
  *                     lokasi: "Gedung A Lt. 2"
  *                     tanggal: "2024-03-05T00:00:00.000Z"
  *                     deskripsiBarang: "Laptop warna hitam"
- *                     photo: null
+ *                     photo: "null"
  *                     isClaimed: false
  *                     laporBy:
  *                       _id: "65eabcd1234567890abcdef"
@@ -158,7 +158,7 @@ const laporBarangRouter = Router();
  *                   lokasi: "Gedung A Lt. 2"
  *                   tanggal: "2024-03-05T00:00:00.000Z"
  *                   deskripsiBarang: "Laptop warna hitam"
- *                   photo: null
+ *                   photo: "null"
  *                   isClaimed: false
  *                   laporBy: "65eabcd1234567890abcdef"
  *                   createdAt: "2024-03-05T13:00:00.000Z"
