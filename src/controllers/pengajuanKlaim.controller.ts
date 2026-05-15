@@ -67,7 +67,7 @@ export const pengajuanKlaimAction = async (req: Request, res: Response) => {
 
     response.successWithData(res, "Berhasil action pengajuan", pengajuan);
   } catch (error) {
-    console.log(error);
+    // console.log(error);
 
     response.serverError(res, "Terjadi kesalahan saat action pengajuan");
   }
@@ -121,8 +121,28 @@ export const getAllPengajuanKlaimIsPending = async (
       },
     );
   } catch (error) {
-    console.log(error);
+    // console.log(error);
 
     response.serverError(res, "Gagal mendapatkan semua pengajuan klaim");
+  }
+};
+
+export const getKlaimById = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const klaim = await Klaim.findById(id);
+    if (!klaim) {
+      return response.notFound(res, "klaim ga ada");
+    }
+    const laporan = await LaporBarang.findById(klaim.idLaporan);
+    if (!laporan) {
+      return response.notFound(res, "laporans ga ada");
+    }
+    response.successWithData(res, "berhasil dapet pengajuan", {
+      klaim,
+      laporan,
+    });
+  } catch (error) {
+    response.serverError(res, "Gagal mendapatkan pengajuan klaim by id");
   }
 };

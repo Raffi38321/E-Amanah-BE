@@ -9,6 +9,7 @@ import { validate } from "../middlewares/reqBody.middleware";
 import {
   createPengajuan,
   getAllPengajuanKlaimIsPending,
+  getKlaimById,
   pengajuanKlaimAction,
 } from "../controllers/pengajuanKlaim.controller";
 import isUserAuthorized from "../middlewares/rbac.middleware";
@@ -199,6 +200,8 @@ pengajuanKlaimRouter.get(
   [verifyToken, isUserAuthorized([Roles.Admin])],
   getAllPengajuanKlaimIsPending,
 );
+
+pengajuanKlaimRouter.get("/:id", [validate], getKlaimById);
 
 pengajuanKlaimRouter.put(
   "/action/:id",
